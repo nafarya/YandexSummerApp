@@ -25,15 +25,31 @@ public class Artist {
     public void addGenre(String genre) {
         genres.add(genre);
     }
-    /*
-    Здесь можно юзать stream`ы, но, так как 8 джаву не завезли и у меня нет времени искать либу пишем это
-     */
+
     public String getGenres() {
         StringBuilder concatination = new StringBuilder();
         for(String s: genres) {
+            if (concatination.length() != 0) {
+                concatination.append(", ");
+            }
             concatination.append(s);
+
         }
         return concatination.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Artist{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", tracks=" + tracks +
+                ", albums=" + albums +
+                ", link='" + link + '\'' +
+                ", description='" + description + '\'' +
+                ", genres=" + genres +
+                ", cover=" + cover +
+                '}';
     }
 
     public String getInfo() {

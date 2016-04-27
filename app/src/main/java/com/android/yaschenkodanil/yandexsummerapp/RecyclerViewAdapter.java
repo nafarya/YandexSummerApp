@@ -1,6 +1,8 @@
 package com.android.yaschenkodanil.yandexsummerapp;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +21,11 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private List<Artist> mDataset;
+    private Context context;
 
-    public RecyclerViewAdapter() {
+    public RecyclerViewAdapter(Context context) {
         mDataset = new ArrayList<>();
+        this.context = context;
     }
 
     @Override
@@ -54,8 +58,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.info.setText(mDataset.get(position).getInfo());
         holder.artistId.setText(String.valueOf(mDataset.get(position).getId()));
 //        holder.art.setText(String.valueOf(mDataset.get(position).getId()));
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.displayImage(mDataset.get(position).getCover().getSmallCoverImage(), holder.image);
+        final String cover = mDataset.get(position).getCover().getSmallCoverImage();
+        if (cover != null && !cover.isEmpty()) {
+            Picasso.with(context).load(cover).into(holder.image);
+        } else {
+            Log.d("azaza", mDataset.get(position).toString());
+        }
     }
 
     @Override

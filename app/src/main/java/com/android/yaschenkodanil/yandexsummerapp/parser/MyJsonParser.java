@@ -44,12 +44,18 @@ public class MyJsonParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String aux = "";
-        String text = "";
-        while ((aux = input.readLine()) != null) {
-            text += aux;
-        }
-        return text;
+        String s = "";
+        StringBuilder concatination = new StringBuilder();
+        while ((s = input.readLine()) != null)
+            concatination.append(s);
+        return concatination.toString();
+
+        //String aux = "";
+        //String text = "";
+        //while ((aux = input.readLine()) != null) {
+        //    text += aux;
+        //}
+        //return text;
     }
 
     public static List<Artist> getAllArtists(String text) throws ParseException {
@@ -72,7 +78,7 @@ public class MyJsonParser {
 
             JSONObject cover = (JSONObject) obj.get("cover");
             Cover cv = new Cover();
-            cv.setBigCoverImage((String) cover.get("small"));
+            cv.setSmallCoverImage((String) cover.get("small"));
             cv.setBigCoverImage((String) cover.get("big"));
             artist.setCover(cv);
             listOfValues.add(artist);

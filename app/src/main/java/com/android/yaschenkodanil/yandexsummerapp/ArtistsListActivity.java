@@ -56,7 +56,7 @@ public class ArtistsListActivity extends AppCompatActivity{
 //
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecyclerViewAdapter();
+        mAdapter = new RecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
         if (savedInstanceState != null) {
