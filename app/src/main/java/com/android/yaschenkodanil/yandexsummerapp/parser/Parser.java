@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by daniil on 25.04.16.
+ * Created by dan on 25.04.16.
  */
 public class Parser {
 

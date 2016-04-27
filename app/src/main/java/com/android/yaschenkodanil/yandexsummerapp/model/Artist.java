@@ -18,7 +18,7 @@ public class Artist {
 
 
     public Artist() {
-        List<String> genres = new ArrayList<>();
+        genres = new ArrayList<>();
         this.cover = new Cover();
     }
 

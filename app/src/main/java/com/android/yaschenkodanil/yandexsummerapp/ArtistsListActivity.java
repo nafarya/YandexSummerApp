@@ -1,27 +1,18 @@
 package com.android.yaschenkodanil.yandexsummerapp;
 
-import android.app.AlertDialog;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
-import com.android.yaschenkodanil.yandexsummerapp.parser.Parser;
+import com.android.yaschenkodanil.yandexsummerapp.parser.MyJsonParser;
 
-import java.net.HttpURLConnection;
+import org.json.simple.parser.JSONParser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +56,7 @@ public class ArtistsListActivity extends AppCompatActivity{
 //
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecyclerViewAdapter(artists);
+        mAdapter = new RecyclerViewAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
         if (savedInstanceState != null) {
@@ -109,12 +100,13 @@ public class ArtistsListActivity extends AppCompatActivity{
 
         @Override
         protected Result doInBackground(Void... params) {
-            Log.i("ff", "Task started");
+            Log.i("fxf", "Task started");
             try {
 
-                Parser parser = new Parser();
+                MyJsonParser parser = new MyJsonParser();
+
                 List<Artist> list = parser.parse();
-                Log.i("ff", "Webcams parsed " + list.size());
+                Log.i("zaza", "Artists parsed " + list.size());
                 if (list == null) {
                     result = Result.ERROR;
                     return result;

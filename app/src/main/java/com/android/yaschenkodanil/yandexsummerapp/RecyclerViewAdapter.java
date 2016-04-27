@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +20,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private List<Artist> mDataset;
 
-    public RecyclerViewAdapter(List<Artist> dataset) {
-        mDataset = dataset;
+    public RecyclerViewAdapter() {
+        mDataset = new ArrayList<>();
     }
 
     @Override
@@ -40,7 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mDataset.clear();
             notifyItemRangeRemoved(0, x);
         }
-        if (items != null) {
+        if (items != null && mDataset != null) {
             mDataset.addAll(items);
             notifyItemRangeInserted(0, items.size());
         }
