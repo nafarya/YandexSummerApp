@@ -1,12 +1,13 @@
 package com.android.yaschenkodanil.yandexsummerapp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by danil on 25.04.16.
  */
-public class Artist {
+public class Artist implements Serializable {
     private long id ;
     private String name = "";
     private long tracks;

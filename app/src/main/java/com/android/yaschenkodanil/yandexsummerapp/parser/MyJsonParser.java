@@ -49,13 +49,6 @@ public class MyJsonParser {
         while ((s = input.readLine()) != null)
             concatination.append(s);
         return concatination.toString();
-
-        //String aux = "";
-        //String text = "";
-        //while ((aux = input.readLine()) != null) {
-        //    text += aux;
-        //}
-        //return text;
     }
 
     public static List<Artist> getAllArtists(String text) throws ParseException {

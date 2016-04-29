@@ -1,9 +1,11 @@
 package com.android.yaschenkodanil.yandexsummerapp.model;
 
+import java.io.Serializable;
+
 /**
  * Created by danil on 25.04.16.
  */
-public class Cover {
+public class Cover implements Serializable {
     private String smallCoverImage = "";
     private String bigCoverImage = "";
 
