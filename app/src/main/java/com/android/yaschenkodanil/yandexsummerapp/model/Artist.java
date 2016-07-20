@@ -1,5 +1,7 @@
 package com.android.yaschenkodanil.yandexsummerapp.model;
 
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

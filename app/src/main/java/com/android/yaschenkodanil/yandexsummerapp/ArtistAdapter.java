@@ -2,6 +2,11 @@ package com.android.yaschenkodanil.yandexsummerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,10 +27,10 @@ import java.util.List;
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> implements ArtistClickListener {
 
     private List<Artist> mDataset;
-    private Context context;
+    private FragmentActivity context;
     private ArtistClickListener listener;
 
-    public ArtistAdapter(Context context) {
+    public ArtistAdapter(FragmentActivity context) {
         mDataset = new ArrayList<>();
         this.context = context;
     }
@@ -78,7 +83,12 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public void onArtistClicked(int position) {
 
         Intent intent = ArtistInfoActivity.getIntent(context, mDataset.get(position));
-        context.startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("bio", mDataset.get(position).getDescription());
+        bundle.putString("pic", mDataset.get(position).getCover().getBigCoverImage());
+        ArtistFragment ArtistAct = new ArtistFragment();
+        ArtistAct.setArguments(bundle);
+        context.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ArtistAct).addToBackStack(null).commit();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
