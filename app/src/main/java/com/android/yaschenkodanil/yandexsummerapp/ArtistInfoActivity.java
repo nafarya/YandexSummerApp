@@ -23,14 +23,10 @@ public class ArtistInfoActivity extends FragmentActivity{
 
     private TextView largeText;
     private ImageView imageView;
-    private HeadSetReciever headSetReciever;
+    private HeadSetReciever headSetReciever = new HeadSetReciever();;
 
 
-    @Override
-    protected void onPause() {
-        unregisterReceiver(headSetReciever);
-        super.onPause();
-    }
+
 
     @Override
     protected void onResume() {
@@ -43,6 +39,12 @@ public class ArtistInfoActivity extends FragmentActivity{
         IntentFilter intentFilterClickRADIO = new IntentFilter(HeadSetReciever.RADIOBUTTON);
         registerReceiver(headSetReciever, intentFilterClickRADIO);
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(headSetReciever);
+        super.onPause();
     }
 
     @Override
@@ -81,8 +83,6 @@ public class ArtistInfoActivity extends FragmentActivity{
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, infoFragment).addToBackStack(null).commit();
             }
         });
-
-        headSetReciever = new HeadSetReciever();
 
     }
 
