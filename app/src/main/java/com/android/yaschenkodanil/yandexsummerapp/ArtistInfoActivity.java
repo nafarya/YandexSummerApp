@@ -2,20 +2,19 @@ package com.android.yaschenkodanil.yandexsummerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-public class ArtistInfoActivity extends AppCompatActivity {
+public class ArtistInfoActivity extends FragmentActivity{
 
     private static final String EXTRA_ARTIST = "artist";
 
@@ -24,32 +23,66 @@ public class ArtistInfoActivity extends AppCompatActivity {
 
     private TextView largeText;
     private ImageView imageView;
+    private HeadSetReciever headSetReciever;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onPause() {
+        unregisterReceiver(headSetReciever);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(headSetReciever, filter);
+
+        IntentFilter intentFilterClickMUSIC = new IntentFilter(HeadSetReciever.MUSICBUTTON);
+        registerReceiver(headSetReciever, intentFilterClickMUSIC);
+
+        IntentFilter intentFilterClickRADIO = new IntentFilter(HeadSetReciever.RADIOBUTTON);
+        registerReceiver(headSetReciever, intentFilterClickRADIO);
+        super.onResume();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scrolling);
+        setContentView(R.layout.fragment_layout);
 
-
-
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        Artist artist = (Artist) bundle.getSerializable(EXTRA_ARTIST);
-        if (artist == null) {
-            finish();
+        if (findViewById(R.id.fragment_container) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
+            Log.i("fxf", "STARTING");
+            
+            ArtistsListActivity firstFragment = new ArtistsListActivity();
+            Log.i("fxf", "FINISHED");
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, firstFragment).commit();
         }
 
 
-        setTitle(artist.getName());
+        (findViewById(R.id.toolbarImageButtonMailId)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mailer = new Intent(Intent.ACTION_SEND);
+                mailer.setType("text/plain");
+                mailer.putExtra(Intent.EXTRA_EMAIL, new String[]{"danyaschenko@gmail.com"});
+                mailer.putExtra(Intent.EXTRA_SUBJECT, "super-app");
+                mailer.putExtra(Intent.EXTRA_TEXT, "best eu");
+                startActivity(Intent.createChooser(mailer, "Send email..."));
+            }
+        });
 
+        (findViewById(R.id.toolbarImageButtonInfoId)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoFragment infoFragment = new InfoFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, infoFragment).addToBackStack(null).commit();
+            }
+        });
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        largeText = (TextView) findViewById(R.id.large_text);
-        largeText.setText(artist.getDescription());
-        imageView = (ImageView) findViewById(R.id.backdrop);
-        Picasso.with(this).load(artist.getCover().getSmallCoverImage())
-                .into((ImageView) findViewById(R.id.backdrop));
+        headSetReciever = new HeadSetReciever();
 
     }
 

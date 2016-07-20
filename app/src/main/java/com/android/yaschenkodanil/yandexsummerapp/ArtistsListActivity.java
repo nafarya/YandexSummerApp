@@ -1,55 +1,74 @@
 package com.android.yaschenkodanil.yandexsummerapp;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
 import com.android.yaschenkodanil.yandexsummerapp.parser.MyJsonParser;
 
 
-
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by danil on 25.04.16.
  */
-public class ArtistsListActivity extends AppCompatActivity{
+public class ArtistsListActivity extends Fragment{
     private DownloadTask downloadTask;
     private RecyclerView mRecyclerView;
     private ArtistAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<Artist> artists;
+    public List<Artist> artists;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artists_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
 
         artists = new ArrayList<>();
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.activity_artists_list, container, false);
 
-        mLayoutManager = new LinearLayoutManager(this);
+
+
+
+        mRecyclerView = (RecyclerView) linearLayout.findViewById(R.id.my_recycler_view);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ArtistAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
-
-        if (savedInstanceState != null) {
-            downloadTask = (DownloadTask) getLastCustomNonConfigurationInstance();
-        }
+        mAdapter = new ArtistAdapter(getActivity());
 
         if (savedInstanceState == null) {
             downloadTask = new DownloadTask(this);
             downloadTask.execute();
         } else {
-            downloadTask.attachActivity(this);
+            artists = (List<Artist>) savedInstanceState.getSerializable("listArtist");
+            mAdapter.setItems(artists);
         }
+        mRecyclerView.setAdapter(mAdapter);
+        return linearLayout;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("listArtist", (Serializable) artists);
+    }
+
 
     public Object onRetainCustomNonConfigurationInstance() {
         return downloadTask;
