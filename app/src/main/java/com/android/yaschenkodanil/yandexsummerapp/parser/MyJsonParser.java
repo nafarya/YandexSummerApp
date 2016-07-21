@@ -2,6 +2,7 @@ package com.android.yaschenkodanil.yandexsummerapp.parser;
 
 import android.util.Log;
 
+import com.android.yaschenkodanil.yandexsummerapp.database.ArtistDataSource;
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
 import com.android.yaschenkodanil.yandexsummerapp.model.Cover;
 
@@ -23,6 +24,7 @@ import java.util.List;
  * Created by dan on 27.04.16.
  */
 public class MyJsonParser {
+
 
     public MyJsonParser() {
 

@@ -3,6 +3,7 @@ package com.android.yaschenkodanil.yandexsummerapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,8 +12,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
+import com.android.yaschenkodanil.yandexsummerapp.database.ArtistDataSource;
+import com.android.yaschenkodanil.yandexsummerapp.database.MySQLiteHelper;
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
+import com.google.android.gms.fitness.data.DataSource;
 
 public class ArtistInfoActivity extends FragmentActivity{
 
@@ -23,10 +29,9 @@ public class ArtistInfoActivity extends FragmentActivity{
 
     private TextView largeText;
     private ImageView imageView;
-    private HeadSetReciever headSetReciever = new HeadSetReciever();;
+    private HeadSetReciever headSetReciever = new HeadSetReciever();
 
-
-
+    private ArtistDataSource dataSource =  new ArtistDataSource(this);;
 
     @Override
     protected void onResume() {
@@ -51,7 +56,6 @@ public class ArtistInfoActivity extends FragmentActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_layout);
-
         if (findViewById(R.id.fragment_container) != null) {
             if (savedInstanceState != null) {
                 return;

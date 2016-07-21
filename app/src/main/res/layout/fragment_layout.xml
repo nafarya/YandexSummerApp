@@ -6,33 +6,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/list_toolbar"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#3F51B5"
-        app:layout_collapseMode="pin"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_height="wrap_content">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_setting_light"
-            android:id="@+id/toolbarImageButtonInfoId"
-            android:layout_gravity="end"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/list_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
             android:background="#3F51B5"
-            />
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/common_plus_signin_btn_icon_dark_pressed"
-            android:id="@+id/toolbarImageButtonMailId"
-            android:layout_gravity="end"
-            android:background="#3F51B5"
-            />
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            xmlns:android="http://schemas.android.com/apk/res/android">
 
-    </android.support.v7.widget.Toolbar>
+            <ImageButton
+                android:layout_width="62dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_info_white_36dp"
+                android:id="@+id/toolbarImageButtonInfoId"
+                android:layout_gravity="end"
+                android:background="#3F51B5"
+                />
+            <ImageButton
+                android:layout_width="62dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_mail_outline_white_36dp"
+                android:id="@+id/toolbarImageButtonMailId"
+                android:layout_gravity="end"
+                android:background="#3F51B5"
+                />
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container"

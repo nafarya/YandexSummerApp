@@ -28,7 +28,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
     private List<Artist> mDataset;
     private FragmentActivity context;
-    private ArtistClickListener listener;
 
     public ArtistAdapter(FragmentActivity context) {
         mDataset = new ArrayList<>();

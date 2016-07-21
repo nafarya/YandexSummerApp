@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.yaschenkodanil.yandexsummerapp.database.ArtistDataSource;
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
 import com.android.yaschenkodanil.yandexsummerapp.parser.MyJsonParser;
 
@@ -36,21 +37,31 @@ public class ArtistsListActivity extends Fragment{
     private ArtistAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     public List<Artist> artists;
+    private final ArtistDataSource dataSource = new ArtistDataSource(getActivity());
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         artists = new ArrayList<>();
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.activity_artists_list, container, false);
-
-
-
 
         mRecyclerView = (RecyclerView) linearLayout.findViewById(R.id.my_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ArtistAdapter(getActivity());
+
+
+        if (artists.size() == 0) {
+            downloadTask = new DownloadTask(this);
+            downloadTask.execute();
+            for (int i = 0; i < artists.size(); i++) {
+                dataSource.createArtist(String.valueOf(artists.get(i).getId()), artists.get(i).getDescription(), artists.get(i).getName());
+            }
+
+
+            //List<Artist> listTestArtist = dataSource.getAllArtists();
+
+        }
 
         if (savedInstanceState == null) {
             downloadTask = new DownloadTask(this);
