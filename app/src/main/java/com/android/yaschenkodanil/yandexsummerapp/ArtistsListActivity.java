@@ -57,20 +57,23 @@ public class ArtistsListActivity extends Fragment{
             Log.i("DOWNLOADDATBEACHES", "YEAY");
             downloadTask = new DownloadTask(this);
             downloadTask.execute();
-            mAdapter.setItems(artists);
         } else {
             Log.i("ADDDATBEACHES", "WOOP");
             artists.addAll(tmp);
+            mAdapter.setItems(artists);
         }
 
 
 
-        /*if (savedInstanceState == null) {
-            savedInstanceState.putSerializable("listArtist", (Serializable) artists);
+        if (savedInstanceState == null) {
+            dataSource.open();
+            artists.addAll(dataSource.getAllArtists());
+            dataSource.close();
         } else {
             artists = (List<Artist>) savedInstanceState.getSerializable("listArtist");
             mAdapter.setItems(artists);
-        }*/
+        }
+
 
 
         mRecyclerView.setAdapter(mAdapter);
@@ -133,7 +136,9 @@ public class ArtistsListActivity extends Fragment{
                 Log.i("zaza", "Artists parsed " + list.size());
                 if (list.size() == 317) {
                     for (int i = 0; i < list.size(); i++) {
-                        dataSource.createArtist(String.valueOf(list.get(i).getId()), list.get(i).getDescription(), list.get(i).getName());
+                        dataSource.createArtist(String.valueOf(list.get(i).getId()), list.get(i).getDescription(), list.get(i).getName(),
+                                list.get(i).getCover().getSmallCoverImage(), list.get(i).getCover().getBigCoverImage(), String.valueOf(list.get(i).getTracks()),
+                                String.valueOf(list.get(i).getAlbums()), list.get(i).getGenres());
                         Log.i("bd", "Artists write in bd " + i);
                     }
                     dataSource.close();
