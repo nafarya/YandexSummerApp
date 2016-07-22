@@ -62,6 +62,9 @@ public class ArtistDataSource {
         while (!cursor.isAfterLast()) {
             Artist artist = cursorToArtist(cursor);
             comments.add(artist);
+            if (comments.size() == 317) {
+                break;                    ////продолжает писать в бд по кругу?! wtf
+            }
             cursor.moveToNext();
         }
         // make sure to close the cursor

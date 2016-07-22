@@ -31,7 +31,7 @@ public class ArtistInfoActivity extends FragmentActivity{
     private ImageView imageView;
     private HeadSetReciever headSetReciever = new HeadSetReciever();
 
-    private ArtistDataSource dataSource =  new ArtistDataSource(this);;
+    private ArtistDataSource dataSource =  new ArtistDataSource(this);
 
     @Override
     protected void onResume() {

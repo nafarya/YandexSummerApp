@@ -12,7 +12,7 @@ import android.util.Log;
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_ARTISTS = "artists";
-    public static final String ARTIST_ID = BaseColumns._ID;
+    public static final String ARTIST_ID = "ARTIST_ID";
     public static final String ARTIST_DESCRIPTION = "ARTIST_DESCRIPTION";
     public static final String ARTIST_NAME = "ARTIST_NAME";
 
@@ -21,7 +21,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
     // Database creation sql statement
-    private static final String DATABASE_CREATE = "create table " + TABLE_ARTISTS + " (id integer primary key not null, desc text, name text not null);";
+    private static final String DATABASE_CREATE = "create table " + TABLE_ARTISTS + " (ARTIST_ID integer primary key not null, ARTIST_DESCRIPTION text, ARTIST_NAME text not null);";
 
     public MySQLiteHelper(Context context) {
         super(context, "artists", null, 1);

@@ -37,11 +37,10 @@ public class ArtistsListActivity extends Fragment{
     private ArtistAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     public List<Artist> artists;
-    private final ArtistDataSource dataSource = new ArtistDataSource(getActivity());
+    private ArtistDataSource dataSource = null;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         artists = new ArrayList<>();
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.activity_artists_list, container, false);
 
@@ -51,25 +50,29 @@ public class ArtistsListActivity extends Fragment{
         mAdapter = new ArtistAdapter(getActivity());
 
 
-        if (artists.size() == 0) {
+        dataSource = new ArtistDataSource(getActivity());
+        dataSource.open();
+        List<Artist> tmp = dataSource.getAllArtists();
+        if (tmp.size() == 0) {
+            Log.i("DOWNLOADDATBEACHES", "YEAY");
             downloadTask = new DownloadTask(this);
             downloadTask.execute();
-            for (int i = 0; i < artists.size(); i++) {
-                dataSource.createArtist(String.valueOf(artists.get(i).getId()), artists.get(i).getDescription(), artists.get(i).getName());
-            }
-
-
-            //List<Artist> listTestArtist = dataSource.getAllArtists();
-
+            mAdapter.setItems(artists);
+        } else {
+            Log.i("ADDDATBEACHES", "WOOP");
+            artists.addAll(tmp);
         }
 
-        if (savedInstanceState == null) {
-            downloadTask = new DownloadTask(this);
-            downloadTask.execute();
+
+
+        /*if (savedInstanceState == null) {
+            savedInstanceState.putSerializable("listArtist", (Serializable) artists);
         } else {
             artists = (List<Artist>) savedInstanceState.getSerializable("listArtist");
             mAdapter.setItems(artists);
-        }
+        }*/
+
+
         mRecyclerView.setAdapter(mAdapter);
         return linearLayout;
     }
@@ -93,6 +96,14 @@ public class ArtistsListActivity extends Fragment{
         INPROGRESS, OK, NOARTIST, ERROR
     }
 
+
+
+
+
+
+
+
+
     private class DownloadTask extends AsyncTask<Void, Void, Result> {
 
         private ArtistsListActivity activity = null;
@@ -110,6 +121,9 @@ public class ArtistsListActivity extends Fragment{
 
         @Override
         protected Result doInBackground(Void... params) {
+
+            dataSource = new ArtistDataSource(getActivity());
+            dataSource.open();
             Log.i("fxf", "Task started");
             try {
 
@@ -117,6 +131,13 @@ public class ArtistsListActivity extends Fragment{
 
                 List<Artist> list = parser.parse();
                 Log.i("zaza", "Artists parsed " + list.size());
+                if (list.size() == 317) {
+                    for (int i = 0; i < list.size(); i++) {
+                        dataSource.createArtist(String.valueOf(list.get(i).getId()), list.get(i).getDescription(), list.get(i).getName());
+                        Log.i("bd", "Artists write in bd " + i);
+                    }
+                    dataSource.close();
+                }
                 if (list == null) {
                     result = Result.ERROR;
                     return result;
@@ -125,6 +146,7 @@ public class ArtistsListActivity extends Fragment{
                     return result;
                 }
                 artists.addAll(list);
+
 
             } catch (Exception e) {
                 return Result.ERROR;
