@@ -104,8 +104,8 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
             name = (TextView) v.findViewById(R.id.recycler_item_name);
             genres = (TextView) v.findViewById(R.id.recycler_item_genres);
             image = (ImageView) v.findViewById(R.id.recycler_item_image);
-            info  = (TextView) v.findViewById(R.id.recycler_item_additional_info);
-            artistId  = (TextView) v.findViewById(R.id.artist_id);
+            info = (TextView) v.findViewById(R.id.recycler_item_additional_info);
+            artistId = (TextView) v.findViewById(R.id.artist_id);
             v.setOnClickListener(this);
         }
 

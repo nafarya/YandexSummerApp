@@ -3,30 +3,11 @@ package com.android.yaschenkodanil.yandexsummerapp.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
-import android.util.Log;
 
 /**
  * Created by dan on 21.07.16.
  */
 public class MySQLiteHelper extends SQLiteOpenHelper {
-
-    /*
-    Artist:
-    private long id ;
-    private String name = "";
-    private long tracks;
-    private long albums;
-    private String link = "";
-    private String description = "";
-    private List<String> genres;
-    private Cover cover;
-
-    Cover:
-    private String smallCoverImage = "";
-    private String bigCoverImage = "";
-    */
-
 
     public static final String TABLE_ARTISTS = "artists";
     public static final String ARTIST_ID = "ARTIST_ID";
@@ -37,10 +18,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String ARTIST_TRACKS= "ARTIST_TRACKS";
     public static final String ARTIST_ALBUMS= "ARTIST_ALBUMS";
     public static final String ARTIST_GENRES= "ARTIST_GENRES";
-
-
-
-
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table " + TABLE_ARTISTS +

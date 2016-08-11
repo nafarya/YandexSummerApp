@@ -23,26 +23,22 @@ public class HeadSetReciever extends BroadcastReceiver {
     public static final String RADIOBUTTON = "RADIOBUTTON";
     private static final String MUSICWEBSITE = "ru.yandex.music";
     private static final String RADIOWEBSITE = "ru.yandex.radio";
-
-
+    private final int NOTIFYID = 228;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         String action = intent.getAction();
-
         switch (action) {
             case Intent.ACTION_HEADSET_PLUG:
                 int state = intent.getIntExtra("state", -1);
                 switch (state) {
                     case 0:
-                        Log.d("!!!!!", "Headset unplugged");
                         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.cancel(228);
+                        notificationManager.cancel(NOTIFYID);
                         break;
                     case 1:
                         createNotification(context);
-                        Log.d("!!!!", "Headset plugged");
                         break;
                     default:
                 }
@@ -54,8 +50,6 @@ public class HeadSetReciever extends BroadcastReceiver {
                 openApp(context, RADIOWEBSITE);
                 break;
         }
-
-
     }
 
     private void openApp(Context context, String websiteName) {
@@ -71,16 +65,20 @@ public class HeadSetReciever extends BroadcastReceiver {
 
     private void createNotification(Context context) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
-        Intent mIntent = new Intent().setAction(MUSICBUTTON);
-        Intent rIntent = new Intent().setAction(RADIOBUTTON);
-        PendingIntent mpIntent = PendingIntent.getBroadcast(context, 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent rpIntent = PendingIntent.getBroadcast(context, 1, rIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.musicButton, mpIntent);
-        remoteViews.setOnClickPendingIntent(R.id.radioButton, rpIntent);
+        Intent intentMusicButton = new Intent().setAction(MUSICBUTTON);
+        Intent intentRadioButton = new Intent().setAction(RADIOBUTTON);
+        PendingIntent pendingIntentMusic = PendingIntent.getBroadcast(
+                context, 0, intentMusicButton, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        PendingIntent pendingIntentRadio = PendingIntent.getBroadcast(
+                context, 1, intentRadioButton, PendingIntent.FLAG_UPDATE_CURRENT
+        );
 
+        remoteViews.setOnClickPendingIntent(R.id.musicButton, pendingIntentMusic);
+        remoteViews.setOnClickPendingIntent(R.id.radioButton, pendingIntentRadio);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_media_play).setContentTitle("My notification").setContentText("Hello World!").setContent(remoteViews);
         Notification notification = mBuilder.build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(228, notification);
+        notificationManager.notify(NOTIFYID, notification);
     }
 }

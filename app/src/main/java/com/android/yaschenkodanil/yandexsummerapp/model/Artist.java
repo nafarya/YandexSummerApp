@@ -1,7 +1,5 @@
 package com.android.yaschenkodanil.yandexsummerapp.model;
 
-import android.os.Parcelable;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,19 +32,14 @@ public class Artist implements Serializable {
         if (genresString.length() > 0)  {
             return genresString;
         }
-
         StringBuilder concatination = new StringBuilder();
         for(String s: genres) {
             if (concatination.length() != 0) {
                 concatination.append(", ");
             }
             concatination.append(s);
-
         }
-        if (genresString.length() == 0) {
-            genresString = concatination.toString();
-        }
-
+        genresString = concatination.toString();
         return concatination.toString();
     }
 
