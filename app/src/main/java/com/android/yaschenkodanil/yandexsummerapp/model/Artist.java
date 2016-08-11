@@ -16,6 +16,7 @@ public class Artist implements Serializable {
     private String description = "";
     private List<String> genres;
     private Cover cover;
+    private String genresString = "";
 
 
     public Artist() {
@@ -28,14 +29,17 @@ public class Artist implements Serializable {
     }
 
     public String getGenres() {
+        if (genresString.length() > 0)  {
+            return genresString;
+        }
         StringBuilder concatination = new StringBuilder();
         for(String s: genres) {
             if (concatination.length() != 0) {
                 concatination.append(", ");
             }
             concatination.append(s);
-
         }
+        genresString = concatination.toString();
         return concatination.toString();
     }
 
@@ -55,6 +59,10 @@ public class Artist implements Serializable {
 
     public String getInfo() {
         return String.valueOf(albums) + " альбомов, " + String.valueOf(tracks) + " песен"  ;
+    }
+
+    public void setGenresString(String genres) {
+        genresString = genres;
     }
 
     public void setId(long id) {

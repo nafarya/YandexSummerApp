@@ -2,54 +2,74 @@ package com.android.yaschenkodanil.yandexsummerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.android.yaschenkodanil.yandexsummerapp.database.ArtistDataSource;
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-public class ArtistInfoActivity extends AppCompatActivity {
+public class ArtistInfoActivity extends FragmentActivity {
 
     private static final String EXTRA_ARTIST = "artist";
-
-    private Artist artist;
-    private Context caller;
-
-    private TextView largeText;
-    private ImageView imageView;
+    private HeadSetReciever headSetReciever = new HeadSetReciever();
+    private ArtistDataSource dataSource = new ArtistDataSource(this);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onResume() {
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(headSetReciever, filter);
+
+        IntentFilter intentFilterClickMusic = new IntentFilter(HeadSetReciever.MUSICBUTTON);
+        registerReceiver(headSetReciever, intentFilterClickMusic);
+
+        IntentFilter intentFilterClickRadio = new IntentFilter(HeadSetReciever.RADIOBUTTON);
+        registerReceiver(headSetReciever, intentFilterClickRadio);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(headSetReciever);
+        super.onPause();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scrolling);
+        setContentView(R.layout.fragment_layout);
+        ArtistsListActivity firstFragment = new ArtistsListActivity();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, firstFragment)
+                .commit();
 
+        findViewById(R.id.toolbarImageButtonMailId).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(
+                        Intent.createChooser(new Intent(Intent.ACTION_SEND)
+                                    .setType("text/plain")
+                                    .putExtra(Intent.EXTRA_EMAIL, new String[]{"danyaschenko@gmail.com"})
+                                    .putExtra(Intent.EXTRA_SUBJECT, "super-app")
+                                    .putExtra(Intent.EXTRA_TEXT, "best eu"),
+                            "Send email...")
+                );
+            }
+        });
 
-
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        Artist artist = (Artist) bundle.getSerializable(EXTRA_ARTIST);
-        if (artist == null) {
-            finish();
-        }
-
-
-        setTitle(artist.getName());
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        largeText = (TextView) findViewById(R.id.large_text);
-        largeText.setText(artist.getDescription());
-        imageView = (ImageView) findViewById(R.id.backdrop);
-        Picasso.with(this).load(artist.getCover().getSmallCoverImage())
-                .into((ImageView) findViewById(R.id.backdrop));
+        findViewById(R.id.toolbarImageButtonInfoId).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoFragment infoFragment = new InfoFragment();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, infoFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
     }
 

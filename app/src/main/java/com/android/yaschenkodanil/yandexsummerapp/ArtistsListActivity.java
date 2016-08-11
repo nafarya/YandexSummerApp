@@ -2,61 +2,68 @@ package com.android.yaschenkodanil.yandexsummerapp;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.android.yaschenkodanil.yandexsummerapp.database.ArtistDataSource;
 import com.android.yaschenkodanil.yandexsummerapp.model.Artist;
 import com.android.yaschenkodanil.yandexsummerapp.parser.MyJsonParser;
 
-
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by danil on 25.04.16.
  */
-public class ArtistsListActivity extends AppCompatActivity{
+public class ArtistsListActivity extends Fragment {
     private DownloadTask downloadTask;
-    private RecyclerView mRecyclerView;
-    private ArtistAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private ArtistAdapter adapter;
     private List<Artist> artists;
+    private ArtistDataSource dataSource = null;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artists_list);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         artists = new ArrayList<>();
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        View linearLayout = inflater.inflate(R.layout.activity_artists_list, container, false);
+        RecyclerView recyclerView = (RecyclerView) linearLayout.findViewById(R.id.my_recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new ArtistAdapter(getActivity());
 
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ArtistAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
-
-        if (savedInstanceState != null) {
-            downloadTask = (DownloadTask) getLastCustomNonConfigurationInstance();
+        dataSource = new ArtistDataSource(getActivity());
+        dataSource.open();
+        List<Artist> temporaryListOfArtist = dataSource.getAllArtists();
+        if (temporaryListOfArtist.isEmpty()) {
+            downloadTask = new DownloadTask();
+            downloadTask.execute();
+        } else {
+            artists.addAll(temporaryListOfArtist);
+            adapter.setItems(artists);
         }
 
         if (savedInstanceState == null) {
-            downloadTask = new DownloadTask(this);
-            downloadTask.execute();
+            dataSource.open();
+            artists.addAll(dataSource.getAllArtists());
+            dataSource.close();
         } else {
-            downloadTask.attachActivity(this);
+            artists = (List<Artist>) savedInstanceState.getSerializable("listArtist");
+            adapter.setItems(artists);
         }
+
+        recyclerView.setAdapter(adapter);
+        return linearLayout;
     }
 
-    public Object onRetainCustomNonConfigurationInstance() {
-        return downloadTask;
-    }
-
-    public void onClick(View view) {
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("listArtist", (Serializable) artists);
     }
 
     private enum Result {
@@ -65,38 +72,37 @@ public class ArtistsListActivity extends AppCompatActivity{
 
     private class DownloadTask extends AsyncTask<Void, Void, Result> {
 
-        private ArtistsListActivity activity = null;
-        private Artist artist = null;
         private Result result = Result.INPROGRESS;
-
-        public DownloadTask(ArtistsListActivity activity) {
-            this.activity = activity;
-        }
-
-        public void attachActivity(ArtistsListActivity activity) {
-            this.activity = activity;
-            publishProgress();
-        }
+        private final int NUMOFARTISTS = 317;
 
         @Override
         protected Result doInBackground(Void... params) {
-            Log.i("fxf", "Task started");
+
+            dataSource = new ArtistDataSource(getActivity());
+            dataSource.open();
             try {
-
                 MyJsonParser parser = new MyJsonParser();
-
                 List<Artist> list = parser.parse();
-                Log.i("zaza", "Artists parsed " + list.size());
-                if (list == null) {
-                    result = Result.ERROR;
-                    return result;
-                } else if (list.size() == 0) {
+                if (list.size() == NUMOFARTISTS) {
+                    for (int i = 0; i < list.size(); i++) {
+                        dataSource.createArtist(String.valueOf(list.get(i).getId()),
+                                list.get(i).getDescription(),
+                                list.get(i).getName(),
+                                list.get(i).getCover().getSmallCoverImage(),
+                                list.get(i).getCover().getBigCoverImage(),
+                                String.valueOf(list.get(i).getTracks()),
+                                String.valueOf(list.get(i).getAlbums()),
+                                list.get(i).getGenres());
+                    }
+                    dataSource.close();
+                }
+                if (list.size() == 0) {
                     result = Result.NOARTIST;
                     return result;
                 }
                 artists.addAll(list);
-
             } catch (Exception e) {
+                Log.i("ArtistListActivity", e.toString());
                 return Result.ERROR;
             }
             result = Result.OK;
@@ -106,7 +112,6 @@ public class ArtistsListActivity extends AppCompatActivity{
         @Override
         protected void onPostExecute(Result res) {
             result = res;
-
             updateUI();
         }
 
@@ -117,11 +122,8 @@ public class ArtistsListActivity extends AppCompatActivity{
 
         private void updateUI() {
             if (result == Result.OK) {
-                mAdapter.setItems(artists);
+                adapter.setItems(artists);
             }
         }
-
     }
-
-
 }
